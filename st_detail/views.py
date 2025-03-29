@@ -22,8 +22,8 @@ class PersonList(APIView):
             queryset = Person.objects.all()
             serializer = PersonSerializer(queryset, many=True)
             return Response(serializer.data)
-        except Exception:
-            return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'error': f'Unexpected error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
         try:
@@ -31,17 +31,18 @@ class PersonList(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception:
-            return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'error': f'Unexpected error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 class PersonDetail(APIView):
     def get(self, request, id):
         try:
             person = get_object_or_404(Person, pk=id)
             serializer = PersonSerializer(person)
             return Response(serializer.data)
-        except Exception:
-            return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+        except Exception as e:
+            return Response({'error': f'Unexpected error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
     def put(self, request, id):
         try:
             person = get_object_or_404(Person, pk=id)
@@ -49,17 +50,17 @@ class PersonDetail(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
-        except Exception:
-            return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+        except Exception as e:
+            return Response({'error': f'Unexpected error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           
     def delete(self, request, id):
         try:
             person = get_object_or_404(Person, pk=id)
             person.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Exception:
-            return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        except Exception as e:
+            return Response({'error': f'Unexpected error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 class NotFound(APIView):
     def get(self, request):
         return Response({'error': "Page not found."}, status=status.HTTP_404_NOT_FOUND)
